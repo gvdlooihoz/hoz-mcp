@@ -1,0 +1,28 @@
+{
+  "name": "hoz-lesson-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for interaction with the lesson and event schedule.",
+  "author": "Genius Agents",
+  "homepage": "https://geniusagents.nl/",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "mcp-hoz-lesson": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc && shx chmod +x dist/*.js",
+    "prepare": "npm run build",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.7.0",
+    "dotenv": "^16.4.7",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.11"
+  }
+}
