@@ -4,12 +4,11 @@ import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { CallToolRequestSchema, ListToolsRequestSchema, Tool } from "@modelcontextprotocol/sdk/types.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { McpFunction } from "./functions/function";
-import { BookRoomFunction, CancelBookedLessonFunction, CancelBookedRoomFunction, GetScheduleFunction, IsCustomerFunction, RegisterLessonFunction } from "./functions";
+import { IsTherapistFunction, BookRoomFunction, CancelBookedRoomFunction } from "./functions";
 import 'dotenv/config';
 
 const mcpFunctions: Array<McpFunction> = [
-    new GetScheduleFunction(), new IsCustomerFunction(), new RegisterLessonFunction(), 
-    new CancelBookedLessonFunction(), new BookRoomFunction(), new CancelBookedRoomFunction()
+    new IsTherapistFunction(), new BookRoomFunction(), new CancelBookedRoomFunction()
 ];
 
 function getTools(): Array<Tool> {
@@ -31,7 +30,7 @@ function getTools(): Array<Tool> {
   
 const server = new Server(
     {
-        name: "HoZ Lesson Service",
+        name: "HoZ Room Service",
         version: "0.1.0",
     }, 
     {
@@ -82,7 +81,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 async function runServer() {
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    console.log("HoZ Lesson Service running on stdio");
+    console.log("HoZ Room Service running on stdio");
 }
   
 runServer().catch((error) => {
