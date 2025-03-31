@@ -44,7 +44,7 @@ export class RegisterEventFunction implements McpFunction {
         }
     }
 
-    public async handleExecution(request) {
+    public async handleExecution(request: any) {
         const { name, arguments: args } = request.params;
     
         if (!args) {

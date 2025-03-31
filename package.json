@@ -4,27 +4,34 @@
   "description": "MCP server for interaction with the lesson and event schedule.",
   "author": "Genius Agents",
   "homepage": "https://geniusagents.nl/",
-  "main": "index.js",
+  "main": "dist/lesson-server.js",
   "type": "module",
   "bin": {
-    "mcp-hoz-lesson": "dist/index.js"
+    "mcp-hoz-lesson": "dist/lesson-server.js",
+    "mcp-hoz-room": "dist/lesson-room.js"
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "lesson": "npx tsx lesson.ts",
-    "room": "npx tsx room.ts",
-    "build": "tsc && shx chmod +x dist/*.js"
+    "build": "tsc",
+    "start": "node dist/lesson-server.js",
+    "start-lesson-server": "node dist/lesson-server.js",
+    "start-room-server": "node dist/room-server.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.7.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@types/node": "^22.13.11",
-    "shx": "^0.3.4",
-    "typescript": "^5.6.2"
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.13.4",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.2.2"
   }
 }

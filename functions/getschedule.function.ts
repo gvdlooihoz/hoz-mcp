@@ -42,7 +42,7 @@ export class GetScheduleFunction implements McpFunction {
         }
     }
 
-    public async handleExecution(request) {
+    public async handleExecution(request: any) {
         const { name, arguments: args } = request.params;
     
         if (!args) {
@@ -54,7 +54,7 @@ export class GetScheduleFunction implements McpFunction {
         return result;
     }
 
-    private async getSchedule(startDate: string, endDate): Promise<any> {
+    private async getSchedule(startDate: string, endDate: string): Promise<any> {
         const response = await fetch("https://getschedulev2-illi72bbyq-uc.a.run.app?startDate=" + startDate + "&endDate=" + endDate, 
             {
                 method: "GET",

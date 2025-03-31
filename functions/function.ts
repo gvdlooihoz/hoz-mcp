@@ -3,6 +3,6 @@ export interface McpFunction {
     readonly description: string;
     readonly inputschema: any;
 
-    handleExecution(request): any;
+    handleExecution(request: any): any;
 }
   
