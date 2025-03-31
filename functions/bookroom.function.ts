@@ -50,15 +50,13 @@ export class BookRoomFunction implements McpFunction {
 
     public async handleExecution(args: any) {
         if (!args) {
-            throw new Error("No arguments provided");
+            return {
+                content: [{type: "text", text: "No arguments provided."}],
+                isError: true
+            };
         }
     
         const { email, date, timeFrom, timeTo, roomId } = args;
-        const result = await this.bookRoom(email as string, date as string, timeFrom as string, timeTo as string, roomId as string);
-        return result;
-    }
-
-    private async bookRoom(email: string, date: string, timeFrom: string, timeTo: string, roomId: string): Promise<any> {
         const body = {
             email: email,
             date: date,
@@ -70,7 +68,7 @@ export class BookRoomFunction implements McpFunction {
             {
                 method: "POST",
                 headers: {
-                    "apiKey": this.HOZ_API_KEY
+                    "apiKey": process.env.HOZ_API_KEY
                 },
                 body: JSON.stringify(body)
             } as RequestInit
@@ -91,6 +89,5 @@ export class BookRoomFunction implements McpFunction {
                 }]
             }
         }
-
     }
 }

@@ -41,15 +41,13 @@ export class CancelBookedEventFunction implements McpFunction {
 
     public async handleExecution(args: any) {
         if (!args) {
-            throw new Error("No arguments provided");
+            return {
+                content: [{type: "text", text: "No arguments provided."}],
+                isError: true
+            };
         }
     
         const { email, date, time } = args;
-        const result = await this.cancelBookedEvent(email as string, date as string, time as string);
-        return result;
-    }
-
-    private async cancelBookedEvent(email: string, date: string, time: string): Promise<any> {
         const body = {
             email: email,
             date: date,
@@ -59,7 +57,7 @@ export class CancelBookedEventFunction implements McpFunction {
             {
                 method: "POST",
                 headers: {
-                    "apiKey": this.HOZ_API_KEY
+                    "apiKey": process.env.HOZ_API_KEY
                 },
                 body: JSON.stringify(body)
             } as RequestInit
@@ -80,6 +78,5 @@ export class CancelBookedEventFunction implements McpFunction {
                 }]
             }
         }
-
     }
 }

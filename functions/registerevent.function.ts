@@ -49,15 +49,13 @@ export class RegisterEventFunction implements McpFunction {
 
     public async handleExecution(args: any) {
         if (!args) {
-            throw new Error("No arguments provided");
+            return {
+                content: [{type: "text", text: "No arguments provided."}],
+                isError: true
+            };
         }
     
-        const { eventDate, eventId, customerName, email, phone } = args;
-        const result = await this.registerLesson(eventDate as string, eventId as string, customerName as string, email as string, phone as string);
-        return result;
-    }
-
-    private async registerLesson(eventDate: string, eventId: string, name: string, email: string, phone: string): Promise<any> {
+        const { eventDate, eventId, name, email, phone } = args;
         const date = eventDate.replace('-', '');
         const body = {
             eventDates: [date],
@@ -70,7 +68,7 @@ export class RegisterEventFunction implements McpFunction {
             {
                 method: "POST",
                 headers: {
-                    "apiKey": this.HOZ_API_KEY
+                    "apiKey": process.env.HOZ_API_KEY
                 },
                 body: JSON.stringify(body)
             } as RequestInit
@@ -93,6 +91,5 @@ export class RegisterEventFunction implements McpFunction {
                 isError: true
             }
         }
-
     }
 }

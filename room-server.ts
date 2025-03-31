@@ -9,10 +9,11 @@ import { McpFunction } from "./functions/function";
 import { IsTherapistFunction } from "./functions/istherapist.function.js";
 import { BookRoomFunction } from "./functions/bookroom.function.js";
 import { CancelBookedRoomFunction } from "./functions/cancelbookedroom.function.js";
+import { GetAvailableRoomsFunction } from "./functions/getavailablerooms.function.js";
 import 'dotenv/config';
 
 const mcpFunctions: Array<McpFunction> = [
-    new IsTherapistFunction(), new BookRoomFunction(), new CancelBookedRoomFunction()
+    new GetAvailableRoomsFunction(), new IsTherapistFunction(), new BookRoomFunction(), new CancelBookedRoomFunction()
 ];
 
 function getTools(): Array<Tool> {

@@ -65,7 +65,7 @@ export class GetScheduleFunction implements McpFunction {
         const content: Array<any> = [];
         for (let i=0; i<json.length; i++) {
             const lessonInfo = json[i];
-            const text = "lessonId: " + lessonInfo.lessonId + ", date: " + lessonInfo.date + ", day: " + lessonInfo.day + ", start time: " + lessonInfo.startTime + ", end time: " + lessonInfo.endTime +
+            const text = "lessonId: " + (lessonInfo.type === "lesson"?lessonInfo.lessonId:lessonInfo.eventId) + ", date: " + lessonInfo.date + ", day: " + lessonInfo.day + ", start time: " + lessonInfo.startTime + ", end time: " + lessonInfo.endTime +
                 ", lesson name: " + lessonInfo.name + ", therapist: " + lessonInfo.therapist + ", price in Zen: " + lessonInfo.priceInZen + ", price in Euro: " + lessonInfo.priceInEuro + 
                 ", type: " + lessonInfo.type + ", capacity: " + lessonInfo.capacity + ", available spots: " + lessonInfo.availableSpots;
             content.push({

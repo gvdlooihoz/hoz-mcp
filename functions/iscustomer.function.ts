@@ -40,7 +40,10 @@ export class IsCustomerFunction implements McpFunction {
 
     public async handleExecution(args: any) {
         if (!args) {
-            throw new Error("No customer email provided");
+            return {
+                content: [{type: "text", text: "No email provided in arguments."}],
+                isError: true
+            };
         }
     
         const { email } = args;

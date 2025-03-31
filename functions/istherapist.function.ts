@@ -38,19 +38,18 @@ export class IsTherapistFunction implements McpFunction {
 
     public async handleExecution(args: any) {
         if (!args) {
-            throw new Error("No customer email provided");
+            return {
+                content: [{type: "text", text: "No email provided in arguments."}],
+                isError: true
+            };
         }
     
         const { email } = args;
-        return await this.isTherapist(email as string);
-    }
-
-    private async isTherapist(email: string): Promise<any> {
         const response = await fetch("https://istherapistv2-illi72bbyq-uc.a.run.app?email=" + email, 
             {
                 method: "GET",
                 headers: {
-                    "apiKey": this.HOZ_API_KEY
+                    "apiKey": process.env.HOZ_API_KEY
                 }
             } as RequestInit
         );
@@ -73,4 +72,4 @@ export class IsTherapistFunction implements McpFunction {
             isError: false
         };
     }
-    }
+}
