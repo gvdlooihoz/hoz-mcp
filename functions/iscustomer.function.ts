@@ -1,4 +1,5 @@
 import { McpFunction } from "./function";
+import { z } from "zod";
 
 export class IsCustomerFunction implements McpFunction {
 
@@ -23,7 +24,9 @@ export class IsCustomerFunction implements McpFunction {
             description: "The email address of the person you want to check if it is a customer."
         },
         required: ["email"],
-    }
+    };
+
+    public zschema = { email: z.string() };
 
     private HOZ_API_KEY: string | undefined;
 
@@ -35,23 +38,17 @@ export class IsCustomerFunction implements McpFunction {
         }
     }
 
-    public async handleExecution(request: any) {
-        const { name, arguments: args } = request.params;
-    
+    public async handleExecution(args: any) {
         if (!args) {
             throw new Error("No customer email provided");
         }
     
         const { email } = args;
-        return await this.isCustomer(email as string);
-    }
-
-    private async isCustomer(email: string): Promise<any> {
         const response = await fetch("https://iscustomerv2-illi72bbyq-uc.a.run.app?email=" + email, 
             {
                 method: "GET",
                 headers: {
-                    "apiKey": this.HOZ_API_KEY
+                    "apiKey": process.env.HOZ_API_KEY
                 }
             } as RequestInit
         );
@@ -73,4 +70,5 @@ export class IsCustomerFunction implements McpFunction {
             isError: false
         };
     }
-    }
+
+}

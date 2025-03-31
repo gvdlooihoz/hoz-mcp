@@ -1,4 +1,5 @@
 import { McpFunction } from "./function";
+import { z } from "zod";
 
 export class IsTherapistFunction implements McpFunction {
 
@@ -21,7 +22,9 @@ export class IsTherapistFunction implements McpFunction {
             description: "The email address of the person you want to check if it is a therapist."
         },
         required: ["email"],
-    }
+    };
+
+    public zschema = { email: z.string() };
 
     private HOZ_API_KEY: string | undefined;
 
@@ -33,9 +36,7 @@ export class IsTherapistFunction implements McpFunction {
         }
     }
 
-    public async handleExecution(request: any) {
-        const { name, arguments: args } = request.params;
-    
+    public async handleExecution(args: any) {
         if (!args) {
             throw new Error("No customer email provided");
         }

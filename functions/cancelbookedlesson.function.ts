@@ -1,4 +1,5 @@
 import { McpFunction } from "./function";
+import { z } from "zod";
 
 export class CancelBookedLessonFunction implements McpFunction {
 
@@ -24,7 +25,9 @@ export class CancelBookedLessonFunction implements McpFunction {
             description: "The start time of the booked lesson you want to cancel. In hh:mm format, i.e. '09:00'."
         },
         required: ["email, date, time"],
-    }
+    };
+
+    public zschema = { email: z.string(), date: z.string(), time: z.string() };
 
     private HOZ_API_KEY: string | undefined;
 
@@ -36,9 +39,7 @@ export class CancelBookedLessonFunction implements McpFunction {
         }
     }
 
-    public async handleExecution(request: any) {
-        const { name, arguments: args } = request.params;
-    
+    public async handleExecution(args: any) {
         if (!args) {
             throw new Error("No arguments provided");
         }

@@ -1,4 +1,5 @@
 import { McpFunction } from "./function";
+import { z } from "zod";
 
 export class RegisterEventFunction implements McpFunction {
 
@@ -32,7 +33,9 @@ export class RegisterEventFunction implements McpFunction {
             description: "The email address of the customer that will be registered."
         },
         required: ["eventDate, eventId, name, email"],
-    }
+    };
+
+    public zschema = { eventDate: z.string(), eventId: z.string(), name: z.string(), email: z.string(), phone: z.string().optional() };
 
     private HOZ_API_KEY: string | undefined;
 
@@ -44,9 +47,7 @@ export class RegisterEventFunction implements McpFunction {
         }
     }
 
-    public async handleExecution(request: any) {
-        const { name, arguments: args } = request.params;
-    
+    public async handleExecution(args: any) {
         if (!args) {
             throw new Error("No arguments provided");
         }

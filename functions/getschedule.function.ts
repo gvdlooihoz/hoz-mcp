@@ -1,4 +1,5 @@
 import { McpFunction } from "./function";
+import { z } from "zod";
 
 export class GetScheduleFunction implements McpFunction {
 
@@ -9,17 +10,17 @@ export class GetScheduleFunction implements McpFunction {
       "- The identifier of the lesson (lessonId);" +
       "- The date of the lessen (date, in yyyy-MM-dd format);" +
       "- The day of the week of the lesson (day);" +
-      "- The start time of the lesson (startTime, in hh:mm format);" +
-      "- The end time of the lesson (endTime, in hh:mm formaat);" +
-      "- The name of the lesson (name);" +
+      "- The start time of the lesson (start time, in hh:mm format);" +
+      "- The end time of the lesson (end time, in hh:mm formaat);" +
+      "- The name of the lesson (lesson name);" +
       "- The name of the therapist or teacher that teaches the lesson (therapist);" +
-      "- The price of the lessen in internal currency Zen (priceInZen);" +
-      "- The price of the lesson in Euro (priceInEuro);" +
+      "- The price of the lessen in internal currency Zen (price in Zen);" +
+      "- The price of the lesson in Euro (price in Euro);" +
       "- The type of lesson (type). if type is Lesson then it's a regular lesson, if type is Event it's a irregular event;" +
       "- The capacity of the lesson. How many customers can attend the lesson (capacity)" +
-      "- The amount of available spots in the lesson (availableSpots)";
+      "- The amount of available spots in the lesson (available spots)";
 
-    public inputschema = {
+    public inputschema: any = {
         type: "object",
         startDate: {
             type: "string",
@@ -30,9 +31,11 @@ export class GetScheduleFunction implements McpFunction {
             description: "The end date until when the schedule is retrieved in format yyyy-MM-dd."
         },
         required: ["startDate, endDate"],
-    }
+    };
 
-    private HOZ_API_KEY: string | undefined;
+    public zschema = { startDate: z.string(), endDate: z.string() };
+
+    public HOZ_API_KEY: string | undefined = "";
 
     constructor() {
         this.HOZ_API_KEY = process.env.HOZ_API_KEY;
@@ -42,24 +45,19 @@ export class GetScheduleFunction implements McpFunction {
         }
     }
 
-    public async handleExecution(request: any) {
-        const { name, arguments: args } = request.params;
-    
+    public async handleExecution(args: any) {
         if (!args) {
-            throw new Error("No start date and end date provided");
-        }
-    
+            return {
+                content: [{type: "text", text: "No start and end date provided as arguments."}],
+                isError: true
+            };
+        }    
         const {startDate, endDate } = args;
-        const result = await this.getSchedule(startDate as string, endDate as string);
-        return result;
-    }
-
-    private async getSchedule(startDate: string, endDate: string): Promise<any> {
         const response = await fetch("https://getschedulev2-illi72bbyq-uc.a.run.app?startDate=" + startDate + "&endDate=" + endDate, 
             {
                 method: "GET",
                 headers: {
-                    "apiKey": this.HOZ_API_KEY
+                    "apiKey": process.env.HOZ_API_KEY
                 }
             } as RequestInit
         );
@@ -80,4 +78,5 @@ export class GetScheduleFunction implements McpFunction {
             isError: false
         };
     }
-    }
+
+}

@@ -1,4 +1,5 @@
 import { McpFunction } from "./function";
+import { z } from "zod";
 
 export class BookRoomFunction implements McpFunction {
 
@@ -33,7 +34,9 @@ export class BookRoomFunction implements McpFunction {
             description: "The id of the room you want to book. The room Id can be obtained from the getAvailableRooms tool."
         },
         required: ["email, date, timeFrom, timeTo, roomId"],
-    }
+    };
+
+    public zschema = { email: z.string(), date: z.string(), timeFrom: z.string(), timeTo: z.string(), roomId: z.string() };
 
     private HOZ_API_KEY: string | undefined;
 
@@ -45,9 +48,7 @@ export class BookRoomFunction implements McpFunction {
         }
     }
 
-    public async handleExecution(request: any) {
-        const { name, arguments: args } = request.params;
-    
+    public async handleExecution(args: any) {
         if (!args) {
             throw new Error("No arguments provided");
         }
