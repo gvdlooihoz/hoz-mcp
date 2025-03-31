@@ -21,4 +21,4 @@ ENV NODE_ENV=production
 EXPOSE 3001
 
 # Run the server
-CMD ["node", "dist/lesson-server/lesson-server.js"]
+CMD ["node", "dist/lesson-server.js"]
