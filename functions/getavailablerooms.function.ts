@@ -57,8 +57,7 @@ export class GetAvailableRoomsFunction implements McpFunction {
                 }
             } as RequestInit
         );
-        let json: any = await response.json();
-        const results: Array<any> = json.result;
+        const results: Array<any> = await response.json();
         const content: Array<any> = [];
         for (let i=0; i<results.length; i++) {
             const roomInfo = results[i];
