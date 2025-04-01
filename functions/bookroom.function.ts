@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export class BookRoomFunction implements McpFunction {
 
-    public name: string = "bookedRoom";
+    public name: string = "bookRoom";
 
     public description: string = "Make a room reservation at Home of Zen ." +
       "The tool returns the following data:" +

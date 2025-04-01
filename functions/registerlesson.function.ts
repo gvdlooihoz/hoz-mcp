@@ -7,8 +7,8 @@ export class RegisterLessonFunction implements McpFunction {
 
     public description: string = "Register a customer for one of the lessons given at Home of Zen." +
       "The tool returns the following data:" +
-      "- Success, when the registration was succesful" + 
-      "- An error, when the registration was not succesful" + 
+      "- Success, when the registration was succesful." + 
+      "- An error, when the registration was not succesful." + 
       "The reservation system of Home of Zen will confirm the reservation by e-mail.";
     public inputschema = {
         type: "object",

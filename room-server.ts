@@ -33,7 +33,7 @@ function getTools(): Array<Tool> {
     return tools;
 }
 
-function installTools(): void {
+function installTools(server: McpServer): void {
     for (const f in mcpFunctions) {
         const func: McpFunction = mcpFunctions[f];
         server.tool(func.name, func.description, func.zschema, func.handleExecution);
@@ -49,7 +49,7 @@ const server = new McpServer(
         capabilities: { tools: {} },
     }
 );
-installTools();
+installTools(server);
 
 const app = express();
 
@@ -93,7 +93,16 @@ app.post("/messages", async (req, res) => {
   // Note: to support multiple simultaneous connections, these messages will
   // need to be routed to a specific matching transport. (This logic isn't
   // implemented here, for simplicity.)
-  await transport.handlePostMessage(req, res);
+  const body = req.body;
+	const params = req.body.params || {};
+	params._meta = {
+		headers: req.headers,
+	};
+	const enrichedBody = {
+		...body,
+		params,
+	};
+  await transport.handlePostMessage(req, res, enrichedBody);
 });
 
 const PORT = process.env.PORT || 3002;
