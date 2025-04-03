@@ -37,55 +37,50 @@ export class RegisterLessonFunction implements McpFunction {
 
     public zschema = { lessonDate: z.string(), lessonId: z.string(), name: z.string(), email: z.string(), phone: z.string().optional() };
 
-    private HOZ_API_KEY: string | undefined;
-
-    constructor() {
-        this.HOZ_API_KEY = process.env.HOZ_API_KEY;
-        if (!this.HOZ_API_KEY) {
-            console.error("Error: HOZ_API_KEY environment variable is required");
-            process.exit(1);
-        }
-    }
-
     public async handleExecution(args: any) {
-        if (!args) {
-            return {
-                content: [{type: "text", text: "No arguments provided."}],
-                isError: true
-            };
-        }
-    
-        const { lessonDate, lessonId, name, email, phone } = args;
-        const body = {
-            lessonDate: lessonDate,
-            lessonId: lessonId,
-            name: name,
-            email: email,
-            phone: phone
-        }
-        const response = await fetch("https://registerlessonv2-illi72bbyq-uc.a.run.app", 
-            {
-                method: "POST",
-                headers: {
-                    "apiKey": process.env.HOZ_API_KEY
-                },
-                body: JSON.stringify(body)
-            } as RequestInit
-        );
-        const json: any = await response.json();
-        if (json.registrationDate) {
-            return { 
-                content: [{
-                    type: "text",
-                    text: "Success"
-                }],
-                isError: false
+        try {
+            const apiKey = process.env.HOZ_API_KEY;
+            if (!apiKey || apiKey.trim() === "") {
+                throw new Error("No HOZ_API_KEY provided. Cannot authorize HoZ API.")
             }
-        } else {
+            if (!args) {
+                throw new Error("No parameters provided.")
+            }
+        
+            const { lessonDate, lessonId, name, email, phone } = args;
+            const body = {
+                lessonDate: lessonDate,
+                lessonId: lessonId,
+                name: name,
+                email: email,
+                phone: phone
+            }
+            const response = await fetch("https://registerlessonv2-illi72bbyq-uc.a.run.app", 
+                {
+                    method: "POST",
+                    headers: {
+                        "apiKey": apiKey
+                    },
+                    body: JSON.stringify(body)
+                } as RequestInit
+            );
+            const json: any = await response.json();
+            if (json.registrationDate) {
+                return { 
+                    content: [{
+                        type: "text",
+                        text: "Success"
+                    }],
+                    isError: false
+                }
+            } else {
+                throw new Error("Registration of the lesson was not successful.");
+            }
+        } catch (error) {
             return { 
                 content: [{
                     type: "text",
-                    text: "Error: Registration for lesson was not successful.",
+                    text: ("Error: " + error)
                 }],
                 isError: true
             }

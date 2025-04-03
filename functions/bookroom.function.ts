@@ -1,3 +1,4 @@
+import { isErrored } from "node:stream";
 import { McpFunction } from "./function";
 import { z } from "zod";
 
@@ -5,17 +6,18 @@ export class BookRoomFunction implements McpFunction {
 
     public name: string = "bookRoom";
 
-    public description: string = "Make a room reservation at Home of Zen ." +
-      "The tool returns the following data:" +
-      "- Success, when the cancellation was succesful" + 
-      "- An error, when the cancellation was not succesful"+
-      "Room reservations are always in day parts. The day parts are from 09:00 - 13:00, 13:30 - 17:30 and 18:00 - 22:00, every day of the week."
+    public description: string = "Make a room reservation at Home of Zen. \n" +
+      "The tool returns the following data: \n" +
+      "- Success, when the cancellation was succesful; \n" + 
+      "- An error, when the cancellation was not succesful; \n"+
+      "Room reservations are always in day parts. \n" +
+      "The day parts are from 09:00 - 13:00, 13:30 - 17:30 and 18:00 - 22:00, every day of the week."
 
     public inputschema = {
         type: "object",
         email: {
             type: "string",
-            description: "TThe e-mail address of the customer that wants to book the room."
+            description: "The e-mail address of the therapist that wants to book the room."
         },
         date: {
             type: "string",
@@ -38,55 +40,56 @@ export class BookRoomFunction implements McpFunction {
 
     public zschema = { email: z.string(), date: z.string(), timeFrom: z.string(), timeTo: z.string(), roomId: z.string() };
 
-    private HOZ_API_KEY: string | undefined;
-
-    constructor() {
-        this.HOZ_API_KEY = process.env.HOZ_API_KEY;
-        if (!this.HOZ_API_KEY) {
-            console.error("Error: HOZ_API_KEY environment variable is required");
-            process.exit(1);
-        }
-    }
-
     public async handleExecution(args: any) {
-        if (!args) {
-            return {
-                content: [{type: "text", text: "No arguments provided."}],
-                isError: true
-            };
-        }
-    
-        const { email, date, timeFrom, timeTo, roomId } = args;
-        const body = {
-            email: email,
-            date: date,
-            timeFrom: timeFrom,
-            timeTo: timeTo,
-            roomId: roomId
-        }
-        const response = await fetch("https://bookroomv2-illi72bbyq-uc.a.run.app", 
-            {
-                method: "POST",
-                headers: {
-                    "apiKey": process.env.HOZ_API_KEY
-                },
-                body: JSON.stringify(body)
-            } as RequestInit
-        );
-        const json: any = await response.json();
-        if (json.result === "Success") {
-            return { 
-                content: [{
-                    type: "text",
-                    text: "Success"
-                }]
+        try {
+            const apiKey = process.env.HOZ_API_KEY;
+            if (!apiKey || apiKey.trim() === "") {
+                throw new Error("No HOZ_API_KEY provided. Cannot authorize HoZ API.")
             }
-        } else {
+            if (!args) {
+                throw new Error("No parameters provided for bookRoom tool.")
+            }
+        
+            const { email, date, timeFrom, timeTo, roomId } = args;
+            const body = {
+                email: email,
+                date: date,
+                timeFrom: timeFrom,
+                timeTo: timeTo,
+                roomId: roomId
+            }
+            const response = await fetch("https://bookroomv2-illi72bbyq-uc.a.run.app", 
+                {
+                    method: "POST",
+                    headers: {
+                        "apiKey": apiKey
+                    },
+                    body: JSON.stringify(body)
+                } as RequestInit
+            );
+            const json: any = await response.json();
+            if (json.result === "Success") {
+                return { 
+                    content: [{
+                        type: "text",
+                        text: "Success"
+                    }],
+                    isError: false
+                }
+            } else {
+                if (json.error) {
+                    throw new Error(json.error);
+                } else {
+                    throw new Error("Booking of the room was not successful.");
+                }
+            }
+        } catch (error) {
             return { 
                 content: [{
                     type: "text",
-                    text: "Error: Booking of the room was not successful."
-                }]
+                    text: ("Error: " + error)
+                }],
+                isError: true
             }
         }
     }

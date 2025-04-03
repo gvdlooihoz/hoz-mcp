@@ -9,14 +9,11 @@ import { McpFunction } from "./functions/function";
 import { GetScheduleFunction } from "./functions/getschedule.function.js";
 import { IsCustomerFunction } from "./functions/iscustomer.function.js";
 import { RegisterLessonFunction } from "./functions/registerlesson.function.js";
-import { RegisterEventFunction } from "./functions/registerevent.function.js";
 import { CancelBookedLessonFunction } from "./functions/cancelbookedlesson.function.js";
-import { CancelBookedEventFunction } from "./functions/cancelbookedevent.function.js";
 import 'dotenv/config';
 
 const mcpFunctions: Array<McpFunction> = [
-    new GetScheduleFunction(), new IsCustomerFunction(), new RegisterLessonFunction(), 
-    new CancelBookedLessonFunction(), new RegisterEventFunction(), new CancelBookedEventFunction()
+  new GetScheduleFunction(), new IsCustomerFunction(), new RegisterLessonFunction(), new CancelBookedLessonFunction()
 ];
 
 function getTools(): Array<Tool> {
@@ -46,7 +43,7 @@ function installTools(server: McpServer): void {
 const server = new McpServer(
     {
         name: "HoZ Lesson Service",
-        version: "0.1.0",
+        version: "0.2.0",
     }, 
     {
         capabilities: { tools: {} },
@@ -69,7 +66,7 @@ app.use(
 app.get("/", (req, res) => {
   res.json({
     name: "HoZ Lesson MCP SSE Server",
-    version: "0.1.0",
+    version: "0.2.0",
     status: "running",
     endpoints: {
       "/": "Server information (this response)",

@@ -13,7 +13,7 @@ import { GetAvailableRoomsFunction } from "./functions/getavailablerooms.functio
 import 'dotenv/config';
 
 const mcpFunctions: Array<McpFunction> = [
-    new GetAvailableRoomsFunction(), new IsTherapistFunction(), new BookRoomFunction(), new CancelBookedRoomFunction()
+  new GetAvailableRoomsFunction(), new IsTherapistFunction(), new BookRoomFunction(), new CancelBookedRoomFunction()
 ];
 
 function getTools(): Array<Tool> {
@@ -43,7 +43,7 @@ function installTools(server: McpServer): void {
 const server = new McpServer(
     {
         name: "HoZ Room Service",
-        version: "0.1.0",
+        version: "0.2.0",
     }, 
     {
         capabilities: { tools: {} },
@@ -66,19 +66,14 @@ app.use(
 app.get("/", (req, res) => {
   res.json({
     name: "HoZ Lesson MCP SSE Server",
-    version: "0.1.0",
+    version: "0.2.0",
     status: "running",
     endpoints: {
       "/": "Server information (this response)",
       "/sse": "Server-Sent Events endpoint for MCP connection",
       "/messages": "POST endpoint for MCP messages",
     },
-    tools: [
-        { name: "getAvailableRooms", description: "Get the availability of the rooms at Home of Zen." },
-        { name: "isTherapist", description: "Determine if someone is a therapist at Home of Zen." },
-        { name: "bookRoom", description: "Make a room reservation." },
-        { name: "cancelBookedRoom", description: "Cancel a room reservation." }
-      ],
+    tools: getTools(),
   });
 });
 
@@ -107,5 +102,5 @@ app.post("/messages", async (req, res) => {
 
 const PORT = process.env.PORT || 3002;
 app.listen(PORT, () => {
-  console.log(`HoZ Lesson MCP SSE Server running on port ${PORT}`);
+  console.log(`HoZ Room MCP SSE Server running on port ${PORT}`);
 });

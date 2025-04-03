@@ -17,7 +17,7 @@ export class IsCustomerFunction implements McpFunction {
       "A Zen is an internal digital payment method to pay for lessons, eventa and sessions. " + 
       "When a customer does not have a credit in Zen, it is possible to pay the therapist/teacher cash or by payment request by bank.";
 
-    public inputschema = {
+    public inputschema = { 
         type: "object",
         email: {
             type: "string",
@@ -28,50 +28,50 @@ export class IsCustomerFunction implements McpFunction {
 
     public zschema = { email: z.string() };
 
-    private HOZ_API_KEY: string | undefined;
-
-    constructor() {
-        this.HOZ_API_KEY = process.env.HOZ_API_KEY;
-        if (!this.HOZ_API_KEY) {
-            console.error("Error: HOZ_API_KEY environment variable is required");
-            process.exit(1);
-        }
-    }
-
     public async handleExecution(args: any) {
-        if (!args) {
+        try {
+            const apiKey = process.env.HOZ_API_KEY;
+            if (!apiKey || apiKey.trim() === "") {
+                throw new Error("No HOZ_API_KEY provided. Cannot authorize HoZ API.")
+            }
+            if (!args) {
+                throw new Error("No email provided in parameters.")
+            }
+            
+            const { email } = args;
+            const response = await fetch("https://iscustomerv2-illi72bbyq-uc.a.run.app?email=" + email, 
+                {
+                    method: "GET",
+                    headers: {
+                        "apiKey": process.env.HOZ_API_KEY
+                    }
+                } as RequestInit
+            );
+            const json: any = await response.json();
+            const customerInfo = json;
+            const text = "isCustomer: " + (customerInfo.isCustomer === true) + 
+                ", firstName: " + customerInfo.firstName + 
+                ", lastName: " + customerInfo.lastName + 
+                ", email: " + customerInfo.email + 
+                ", phone: " + customerInfo.phone +
+                ", subscription: " + customerInfo.subscription + 
+                ", credits: " + customerInfo.credits;
+            const content = [{
+                type: "text",
+                text: text
+            }];
             return {
-                content: [{type: "text", text: "No email provided in arguments."}],
-                isError: true
+                content: content,
+                isError: false
             };
+        } catch (error) {
+            return { 
+                content: [{
+                    type: "text",
+                    text: ("Error: " + error)
+                }],
+                isError: true
+            }
         }
-    
-        const { email } = args;
-        const response = await fetch("https://iscustomerv2-illi72bbyq-uc.a.run.app?email=" + email, 
-            {
-                method: "GET",
-                headers: {
-                    "apiKey": process.env.HOZ_API_KEY
-                }
-            } as RequestInit
-        );
-        const json: any = await response.json();
-        const customerInfo = json;
-        const text = "isCustomer: " + (customerInfo.isCustomer === true) + 
-            ", firstName: " + customerInfo.firstName + 
-            ", lastName: " + customerInfo.lastName + 
-            ", email: " + customerInfo.email + 
-            ", phone: " + customerInfo.phone +
-            ", subscription: " + customerInfo.subscription + 
-            ", credits: " + customerInfo.credits;
-        const content = [{
-            type: "text",
-            text: text
-        }];
-        return {
-            content: content,
-            isError: false
-        };
     }
-
 }

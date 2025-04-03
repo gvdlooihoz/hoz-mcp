@@ -5,7 +5,7 @@ export class CancelBookedLessonFunction implements McpFunction {
 
     public name: string = "cancelBookedLesson";
 
-    public description: string = "Cancel the reservation for a customer of a booked lesson at Home of Zen." +
+    public description: string = "Cancel the reservation of a booked lesson at Home of Zen." +
       "The tool returns the following data:" +
       "- Success, when the cancellation was succesful" + 
       "- An error, when the cancellation was not succesful";
@@ -29,53 +29,49 @@ export class CancelBookedLessonFunction implements McpFunction {
 
     public zschema = { email: z.string(), date: z.string(), time: z.string() };
 
-    private HOZ_API_KEY: string | undefined;
-
-    constructor() {
-        this.HOZ_API_KEY = process.env.HOZ_API_KEY;
-        if (!this.HOZ_API_KEY) {
-            console.error("Error: HOZ_API_KEY environment variable is required");
-            process.exit(1);
-        }
-    }
-
     public async handleExecution(args: any) {
-        if (!args) {
-            return {
-                content: [{type: "text", text: "No arguments provided."}],
-                isError: true
-            };
-        }
-    
-        const { email, date, time } = args;
-        const body = {
-            email: email,
-            date: date,
-            time: time
-        }
-        const response = await fetch("https://cancelbookedlessonv2-illi72bbyq-uc.a.run.app", 
-            {
-                method: "POST",
-                headers: {
-                    "apiKey": process.env.HOZ_API_KEY
-                },
-                body: JSON.stringify(body)
-            } as RequestInit
-        );
-        const json: any = await response.json();
-        if (json.result === "Success") {
-            return { 
-                content: [{
-                    type: "text",
-                    text: "Success"
-                }]
+        try {
+            const apiKey = process.env.HOZ_API_KEY;
+            if (!apiKey || apiKey.trim() === "") {
+                throw new Error("No HOZ_API_KEY provided. Cannot authorize HoZ API.")
             }
-        } else {
+            if (!args) {
+                throw new Error("No parameters provided.")
+            }
+        
+            const { email, date, time } = args;
+            const body = {
+                email: email,
+                date: date,
+                time: time
+            }
+            const response = await fetch("https://cancelbookedlessonv2-illi72bbyq-uc.a.run.app", 
+                {
+                    method: "POST",
+                    headers: {
+                        "apiKey": apiKey
+                    },
+                    body: JSON.stringify(body)
+                } as RequestInit
+            );
+            const json: any = await response.json();
+            if (json.result === "Success") {
+                return { 
+                    content: [{
+                        type: "text",
+                        text: "Success"
+                    }]
+                }
+            } else {
+                throw new Error("Cancellation of the lesson was not successful.");
+            }
+        } catch (error) {
             return { 
                 content: [{
                     type: "text",
-                    text: "Error: Cancellation of booked lesson was not successful."
-                }]
+                    text: ("Error: " + error)
+                }],
+                isError: true
             }
         }
     }
