@@ -4,6 +4,6 @@ export interface McpFunction {
     readonly inputschema: any;
     readonly zschema: any;
 
-    handleExecution(args: any): any;
+    handleExecution(args: any, extra?: any): any;
 }
   

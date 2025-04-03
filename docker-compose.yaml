@@ -9,7 +9,6 @@ services:
       - '3001:3001'
     environment:
       - NODE_ENV=production
-      - HOZ_API_KEY=4e7177d7-34ce-45c2-bdd3-d7c029dba370
     restart: unless-stopped 
   room-server:
     build:
@@ -19,5 +18,4 @@ services:
       - '3002:3002'
     environment:
       - NODE_ENV=production
-      - HOZ_API_KEY=4e7177d7-34ce-45c2-bdd3-d7c029dba370
     restart: unless-stopped 

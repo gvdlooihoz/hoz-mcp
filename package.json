@@ -1,6 +1,6 @@
 {
-  "name": "hoz-lesson-mcp",
-  "version": "0.1.0",
+  "name": "hoz-mcp",
+  "version": "0.2.0",
   "description": "MCP server for interaction with the lesson and event schedule.",
   "author": "Genius Agents",
   "homepage": "https://geniusagents.nl/",

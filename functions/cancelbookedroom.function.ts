@@ -1,3 +1,4 @@
+import { ApiKeyManager } from "./apikeymanager.js";
 import { McpFunction } from "./function";
 import { z } from "zod";
 
@@ -39,9 +40,17 @@ export class CancelBookedRoomFunction implements McpFunction {
 
     public zschema = { email: z.string(), date: z.string(), timeFrom: z.string(), timeTo: z.string(), roomId: z.string() };
 
-    public async handleExecution(args: any) {
+    public async handleExecution(args: any, extra: any) {
         try {
-            const apiKey = process.env.HOZ_API_KEY;
+            const sessionId = extra.sessionId;
+            let apiKey: string | undefined;
+            if (sessionId) {
+                apiKey = ApiKeyManager.getApiKey(sessionId);
+                console.log("Api Key from ApiKeyManager: " + apiKey);
+            } else {
+                apiKey = process.env.HOZ_API_KEY;
+                console.log("Api Key from environment variable: " + apiKey);
+            }
             if (!apiKey || apiKey.trim() === "") {
                 throw new Error("No HOZ_API_KEY provided. Cannot authorize HoZ API.")
             }

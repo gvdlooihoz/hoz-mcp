@@ -1,3 +1,4 @@
+import { ApiKeyManager } from "./apikeymanager.js";
 import { McpFunction } from "./function";
 import { z } from "zod";
 
@@ -35,9 +36,17 @@ export class GetScheduleFunction implements McpFunction {
 
     public zschema = { startDate: z.string(), endDate: z.string() };
 
-    public async handleExecution(args: any) {
+    public async handleExecution(args: any, extra: any) {
         try {
-            const apiKey = process.env.HOZ_API_KEY;
+            const sessionId = extra.sessionId;
+            let apiKey: string | undefined;
+            if (sessionId) {
+                apiKey = ApiKeyManager.getApiKey(sessionId);
+                console.log("Api Key from ApiKeyManager: " + apiKey);
+            } else {
+                apiKey = process.env.HOZ_API_KEY;
+                console.log("Api Key from environment variable: " + apiKey);
+            }
             if (!apiKey || apiKey.trim() === "") {
                 throw new Error("No HOZ_API_KEY provided. Cannot authorize HoZ API.")
             }
@@ -45,7 +54,7 @@ export class GetScheduleFunction implements McpFunction {
                 throw new Error("No start and end date provided in parameters.")
             }
 
-            const {startDate, endDate } = args;
+            const { startDate, endDate } = args;
             const response = await fetch("https://getschedulev2-illi72bbyq-uc.a.run.app?startDate=" + startDate + "&endDate=" + endDate, 
                 {
                     method: "GET",
