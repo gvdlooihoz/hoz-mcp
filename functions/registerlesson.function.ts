@@ -74,6 +74,7 @@ export class RegisterLessonFunction implements McpFunction {
                 } as RequestInit
             );
             const json: any = await response.json();
+            console.log("Register lesson result: " + JSON.stringify(json));
             if (json.registrationDate) {
                 return { 
                     content: [{
