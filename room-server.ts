@@ -66,7 +66,7 @@ app.use(
 // Add a simple root route handler
 app.get("/", (req, res) => {
   res.json({
-    name: "HoZ Lesson MCP SSE Server",
+    name: "HoZ Room MCP SSE Server",
     version: "0.2.0",
     status: "running",
     endpoints: {
