@@ -55,7 +55,7 @@ export class GetAvailableRoomsFunction implements McpFunction {
                 {
                     method: "GET",
                     headers: {
-                        "apiKey": process.env.HOZ_API_KEY
+                        "apiKey": apiKey
                     }
                 } as RequestInit
             );

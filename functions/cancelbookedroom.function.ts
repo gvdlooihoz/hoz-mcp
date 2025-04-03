@@ -70,7 +70,7 @@ export class CancelBookedRoomFunction implements McpFunction {
                 {
                     method: "POST",
                     headers: {
-                        "apiKey": process.env.HOZ_API_KEY
+                        "apiKey": apiKey
                     },
                     body: JSON.stringify(body)
                 } as RequestInit
