@@ -96,7 +96,7 @@ export class LessonServer {
 
     function getMountPoint(req: any) {
       const originalUrl = req.originalUrl;
-      // skip the parajeters
+      // skip the parameters
       let originalUrlWithoutParameters = originalUrl.split("?")[0];
       let mountUrl = "";
       // skip trailing / if available
@@ -111,7 +111,7 @@ export class LessonServer {
 
     this.app.get("/sse", async (req, res) => {
       const mount = getMountPoint(req);
-      const transport = new SSEServerTransport(mount + '/messages', res);
+      const transport = new SSEServerTransport(req.originalUrl + '/messages', res);
       this.transports[transport.sessionId] = transport;
       res.on("close", () => {
         delete this.transports[transport.sessionId];
