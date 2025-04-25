@@ -106,6 +106,7 @@ export class RoomServer {
           }
         }
       });
+      res.setHeader("X-Accel-Buffering","no");
       await this.server.connect(transport);
 
       const pingInterval = setInterval(() => {
@@ -128,9 +129,11 @@ export class RoomServer {
               "id": "123",
               "method": "ping"
             };
+            res.setHeader("X-Accel-Buffering","no");
             transport.send(ping);
           } else {
             if (!res.writableEnded) {
+              res.setHeader("X-Accel-Buffering","no");
               res.write(`:ping\n\n`);
             } else {
               console.log(`Response for session ${transport.sessionId} is no longer writable, clearing interval`);
@@ -161,6 +164,7 @@ export class RoomServer {
           ApiKeyManager.setApiKey(sessionId, apiKey);
         }
       }
+      res.setHeader("X-Accel-Buffering","no");
       if (transport) {
         await transport.handlePostMessage(req, res);
       } else {
