@@ -3,7 +3,7 @@
 import express from "express";
 import cors from "cors";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { Tool } from "@modelcontextprotocol/sdk/types.js";
+import { JSONRPCMessage, Tool } from "@modelcontextprotocol/sdk/types.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { RequestHandlerExtra } from "@modelcontextprotocol/sdk/shared/protocol";
 import { McpFunction } from "./functions/function";
