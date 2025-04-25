@@ -112,7 +112,8 @@ export class LessonServer {
     this.app.get("/sse", async (req, res) => {
       console.log("Mount point: " + getMountPoint(req));
       console.log("Original url: " + req.originalUrl);
-      console.log("Host: " + req.host);
+      console.log("Host: " + req.hostname);
+      console.log("Origin: " + req.headers.origin);
       console.log(JSON.stringify(req));
       const mount = "/hoz-lesson";
       const transport = new SSEServerTransport(mount + '/messages', res);
