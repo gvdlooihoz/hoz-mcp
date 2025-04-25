@@ -166,7 +166,6 @@ export class LessonServer {
           ApiKeyManager.setApiKey(sessionId, apiKey);
         }
       }
-      res.setHeader("X-Accel-Buffering","no");
       if (transport) {
         await transport.handlePostMessage(req, res);
       } else {
