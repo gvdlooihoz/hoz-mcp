@@ -103,14 +103,15 @@ export class LessonServer {
       if (originalUrlWithoutParameters.endsWith("/")) {
         originalUrlWithoutParameters = originalUrlWithoutParameters.substring(0,originalUrlWithoutParameters.length - 1);
       }
-      if (originalUrlWithoutParameters.startsWith("/sse")) {
-        mountUrl = originalUrlWithoutParameters.substring(4,originalUrlWithoutParameters.length);
+      if (originalUrlWithoutParameters.endsWith("/sse")) {
+        mountUrl = originalUrlWithoutParameters.substring(0,originalUrlWithoutParameters.length - 4);
       }
       return mountUrl;
     }
 
     this.app.get("/sse", async (req, res) => {
-      const mount = getMountPoint(req);
+//      const mount = getMountPoint(req);
+      const mount = "/hoz-lesson";
       const transport = new SSEServerTransport(mount + '/messages', res);
       this.transports[transport.sessionId] = transport;
       res.on("close", () => {
