@@ -103,8 +103,8 @@ export class LessonServer {
       if (originalUrlWithoutParameters.endsWith("/")) {
         originalUrlWithoutParameters = originalUrlWithoutParameters.substring(0,originalUrlWithoutParameters.length - 1);
       }
-      if (originalUrlWithoutParameters.endsWith("/sse")) {
-        mountUrl = originalUrlWithoutParameters.substring(0,originalUrlWithoutParameters.length - 4);
+      if (originalUrlWithoutParameters.startsWith("/sse")) {
+        mountUrl = originalUrlWithoutParameters.substring(4,originalUrlWithoutParameters.length);
       }
       return mountUrl;
     }
