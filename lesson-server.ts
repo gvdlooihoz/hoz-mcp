@@ -114,7 +114,6 @@ export class LessonServer {
       console.log("Original url: " + req.originalUrl);
       console.log("Host: " + req.hostname);
       console.log("Origin: " + req.headers.origin);
-      console.log(JSON.stringify(req));
       const mount = "/hoz-lesson";
       const transport = new SSEServerTransport(mount + '/messages', res);
       this.transports[transport.sessionId] = transport;
