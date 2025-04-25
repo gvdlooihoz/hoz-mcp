@@ -111,7 +111,7 @@ export class LessonServer {
 
     this.app.get("/sse", async (req, res) => {
       const mount = getMountPoint(req);
-      const transport = new SSEServerTransport(req.originalUrl + '/messages', res);
+      const transport = new SSEServerTransport(mount + '/messages', res);
       this.transports[transport.sessionId] = transport;
       res.on("close", () => {
         delete this.transports[transport.sessionId];
