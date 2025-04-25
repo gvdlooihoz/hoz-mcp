@@ -94,27 +94,11 @@ export class LessonServer {
       return obj && typeof obj[methodName] === 'function';
     }
 
-    function getMountPoint(req: any) {
-      const originalUrl = req.originalUrl;
-      // skip the parameters
-      let originalUrlWithoutParameters = originalUrl.split("?")[0];
-      let mountUrl = "";
-      // skip trailing / if available
-      if (originalUrlWithoutParameters.endsWith("/")) {
-        originalUrlWithoutParameters = originalUrlWithoutParameters.substring(0,originalUrlWithoutParameters.length - 1);
-      }
-      if (originalUrlWithoutParameters.endsWith("/sse")) {
-        mountUrl = originalUrlWithoutParameters.substring(0,originalUrlWithoutParameters.length - 4);
-      }
-      return mountUrl;
-    }
-
     this.app.get("/sse", async (req, res) => {
-      console.log("Mount point: " + getMountPoint(req));
-      console.log("Original url: " + req.originalUrl);
-      console.log("Host: " + req.hostname);
-      console.log("Origin: " + req.headers.origin);
-      const mount = "/hoz-lesson";
+      let mount = "";
+      if (req.headers.origin) {
+        mount = req.headers.origin;
+      }
       const transport = new SSEServerTransport(mount + '/messages', res);
       this.transports[transport.sessionId] = transport;
       res.on("close", () => {
@@ -127,7 +111,6 @@ export class LessonServer {
           }
         }
       });
-      res.setHeader("X-Accel-Buffering","no");
       await this.server.connect(transport);
 
       const pingInterval = setInterval(() => {
@@ -150,11 +133,9 @@ export class LessonServer {
               "id": "123",
               "method": "ping"
             };
-            res.setHeader("X-Accel-Buffering","no");
             transport.send(ping);
           } else {
             if (!res.writableEnded) {
-              res.setHeader("X-Accel-Buffering","no");
               res.write(`:ping\n\n`);
             } else {
               console.log(`Response for session ${transport.sessionId} is no longer writable, clearing interval`);
